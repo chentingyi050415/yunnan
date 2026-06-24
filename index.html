@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南泼水节舆情分析 · 三平台比较研究</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* ===== 全局变量 ===== */
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2a5a7c;
+            --accent: #e67e22;
+            --accent-light: #f39c12;
+            --bg-light: #f8f9fc;
+            --text-dark: #1a1a2e;
+            --text-muted: #5a6a7a;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.7;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* ===== 滚动条美化 ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #eef0f4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        /* ===== 通用 ===== */
+        .container {
+            max-width: 1280px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 2.1rem;
+            letter-spacing: -0.02em;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            background: #ffffff;
+            transition: transform var(--transition), box-shadow var(--transition);
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+        .card-body {
+            padding: 1.8rem 1.8rem 2rem;
+        }
+
+        .badge-platform {
+            font-weight: 500;
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 0.3px;
+        }
+        .badge-douyin {
+            background: #e8f0fe;
+            color: #1a5fb4;
+        }
+        .badge-weibo {
+            background: #fde8e8;
+            color: #c0392b;
+        }
+        .badge-wechat {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* ===== 导航条 ===== */
+        .navbar-custom {
+            background: rgba(26, 58, 92, 0.92);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.12);
+            padding: 0.6rem 0;
+            transition: background var(--transition);
+        }
+        .navbar-custom .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .navbar-custom .navbar-brand i {
+            color: var(--accent-light);
+            margin-right: 8px;
+        }
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.9rem;
+            transition: color var(--transition);
+        }
+        .navbar-custom .nav-link:hover {
+            color: #fff;
+        }
+
+        /* ===== Hero ===== */
+        .hero {
+            background: linear-gradient(135deg, #0f2840 0%, #1a3a5c 50%, #2a5a7c 100%);
+            padding: 5rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(230, 126, 34, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(243, 156, 18, 0.10) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-weight: 800;
+            font-size: 3.2rem;
+            color: #fff;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(90deg, var(--accent-light), #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .subhead {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0.5rem auto 1.5rem;
+            font-weight: 400;
+        }
+        .hero .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem 3rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        .hero .meta-item {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+        }
+        .hero .meta-item i {
+            color: var(--accent-light);
+            margin-right: 6px;
+            width: 20px;
+        }
+        .hero .meta-item strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ===== 数字卡片 ===== */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0 1rem;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 1.5rem 1.2rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: transform var(--transition);
+            border-bottom: 4px solid var(--primary-light);
+        }
+        .stat-card:hover {
+            transform: translateY(-6px);
+        }
+        .stat-card .number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        .stat-card .number .suffix {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 0.2rem;
+        }
+        .stat-card .icon {
+            font-size: 1.8rem;
+            color: var(--accent-light);
+            margin-bottom: 0.3rem;
+        }
+        .stat-card.accent {
+            border-bottom-color: var(--accent);
+        }
+        .stat-card.accent .number {
+            color: var(--accent);
+        }
+
+        /* ===== 流程图 ===== */
+        .flow-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem 0.8rem;
+            padding: 1.5rem 0.5rem;
+        }
+        .flow-step {
+            background: #fff;
+            border-radius: 12px;
+            padding: 0.9rem 1.6rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+            border: 1px solid #eef0f4;
+            min-width: 100px;
+            text-align: center;
+            transition: all var(--transition);
+        }
+        .flow-step:hover {
+            border-color: var(--accent-light);
+            box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
+        }
+        .flow-step .step-num {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-right: 8px;
+            text-align: center;
+        }
+        .flow-arrow {
+            font-size: 1.4rem;
+            color: var(--accent-light);
+            font-weight: 300;
+            flex-shrink: 0;
+        }
+
+        /* ===== 图表容器 ===== */
+        .chart-container {
+            width: 100%;
+            height: 380px;
+            min-height: 320px;
+        }
+        .chart-container.tall {
+            height: 450px;
+        }
+        .chart-container.short {
+            height: 260px;
+        }
+
+        /* ===== 平台标签 ===== */
+        .platform-tag {
+            display: inline-block;
+            padding: 0.2rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+        .platform-tag.douyin {
+            background: #e8f0fe;
+            color: #1a5fb4;
+        }
+        .platform-tag.weibo {
+            background: #fde8e8;
+            color: #c0392b;
+        }
+        .platform-tag.video {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* ===== 结论卡片 ===== */
+        .conclusion-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.2rem 1.6rem;
+            border-left: 5px solid var(--accent);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1rem;
+            transition: all var(--transition);
+        }
+        .conclusion-item:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transform: translateX(4px);
+        }
+        .conclusion-item .num {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .conclusion-item .text {
+            font-size: 0.98rem;
+            color: var(--text-dark);
+        }
+        .conclusion-item .text strong {
+            color: var(--primary);
+        }
+
+        /* ===== 局限 ===== */
+        .limitation-item {
+            background: #f8f9fc;
+            border-radius: 12px;
+            padding: 1rem 1.4rem;
+            border: 1px solid #eef0f4;
+            transition: all var(--transition);
+        }
+        .limitation-item:hover {
+            border-color: var(--accent-light);
+        }
+        .limitation-item i {
+            color: var(--accent);
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* ===== 评论卡片 ===== */
+        .comment-card {
+            background: #f8f9fc;
+            border-radius: 12px;
+            padding: 1rem 1.4rem;
+            border-left: 4px solid var(--primary-light);
+            margin-bottom: 0.8rem;
+            transition: all var(--transition);
+        }
+        .comment-card:hover {
+            background: #f0f2f5;
+        }
+        .comment-card .user {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        .comment-card .text {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin: 0.2rem 0 0.3rem;
+        }
+        .comment-card .meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .comment-card .meta i {
+            margin-right: 4px;
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            background: var(--primary);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 2.5rem 0;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #fff;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .section-title {
+                font-size: 1.7rem;
+            }
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-container {
+                height: 320px;
+            }
+            .chart-container.tall {
+                height: 380px;
+            }
+        }
+        @media (max-width: 576px) {
+            .hero {
+                padding: 3rem 0 2.5rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero .subhead {
+                font-size: 1rem;
+            }
+            .hero .meta-info {
+                gap: 0.8rem 1.5rem;
+                font-size: 0.85rem;
+            }
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            .stat-card {
+                padding: 1rem 0.8rem;
+            }
+            .stat-card .number {
+                font-size: 2rem;
+            }
+            .section-title {
+                font-size: 1.4rem;
+            }
+            .card-body {
+                padding: 1.2rem;
+            }
+            .flow-step {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+                min-width: 70px;
+            }
+            .flow-arrow {
+                font-size: 1rem;
+            }
+            .chart-container {
+                height: 260px;
+            }
+            .chart-container.tall {
+                height: 300px;
+            }
+            .conclusion-item {
+                padding: 0.8rem 1rem;
+            }
+            .conclusion-item .text {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* ===== 滚动淡入动画 ===== */
+        .fade-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .fade-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== 导航栏滚动变色 ===== */
+        .navbar-scrolled {
+            background: rgba(15, 40, 64, 0.97) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        /* ===== 工具类 ===== */
+        .text-accent {
+            color: var(--accent);
+        }
+        .bg-accent-light {
+            background: #fef9f0;
+        }
+        .border-accent {
+            border-color: var(--accent-light) !important;
+        }
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        .gap-3 {
+            gap: 1rem;
+        }
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+        .mb-5 {
+            margin-bottom: 3rem;
+        }
+        .mt-5 {
+            margin-top: 3rem;
+        }
+        .py-5 {
+            padding-top: 3.5rem;
+            padding-bottom: 3.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    导航栏
+    ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-water"></i> 泼水节舆情 · 三平台比较
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#overview">概览</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#method">方法</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sample">样本</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#keywords">高频词</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sentiment">情感</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#interaction">互动</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#platform">平台比较</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#conclusion">结论</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    HERO
+    ============================================================ -->
+    <header class="hero" id="top">
+        <div class="container text-center">
+            <h1>
+                云南泼水节<br>
+                <span class="highlight">网络舆情分析</span>
+            </h1>
+            <p class="subhead">
+                基于抖音、微博、视频号三平台 1,500 条评论数据的比较研究
+            </p>
+            <div class="meta-info">
+                <span class="meta-item"><i class="fas fa-calendar-alt"></i> 2025.07.14 – 07.20</span>
+                <span class="meta-item"><i class="fas fa-comment-dots"></i> <strong>1,500</strong> 条评论</span>
+                <span class="meta-item"><i class="fas fa-layer-group"></i> <strong>3</strong> 个平台</span>
+                <span class="meta-item"><i class="fas fa-tag"></i> 传统民俗 · 公共文明 · 文旅舆情</span>
+            </div>
+            <div style="margin-top: 1.2rem;">
+                <span class="badge badge-platform badge-douyin">抖音</span>
+                <span class="badge badge-platform badge-weibo">微博</span>
+                <span class="badge badge-platform badge-wechat">视频号</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    第一部分：项目概览
+    ============================================================ -->
+    <section class="py-5" id="overview">
+        <div class="container">
+            <div class="text-center mb-5 fade-section" id="overview-title">
+                <h2 class="section-title d-inline-block">项目概览</h2>
+                <p class="section-subtitle">研究规模 · 数据来源 · 时间窗口</p>
+            </div>
+
+            <!-- 数字卡片 -->
+            <div class="stat-grid fade-section" id="stat-cards">
+                <div class="stat-card accent">
+                    <div class="icon"><i class="fas fa-comments"></i></div>
+                    <div class="number">1,500 <span class="suffix">条</span></div>
+                    <div class="label">全网评论样本</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="number">3 <span class="suffix">个</span></div>
+                    <div class="label">平台（抖音 · 微博 · 视频号）</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fas fa-clock"></i></div>
+                    <div class="number">7 <span class="suffix">天</span></div>
+                    <div class="label">观察期（2025.07.14–07.20）</div>
+                </div>
+                <div class="stat-card accent">
+                    <div class="icon"><i class="fas fa-chart-pie"></i></div>
+                    <div class="number">4 <span class="suffix">大</span></div>
+                    <div class="label">核心议题维度</div>
+                </div>
+            </div>
+
+            <!-- 研究背景简述 -->
+            <div class="row mt-4 fade-section" id="overview-bg">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-2"><i class="fas fa-bullseye text-accent me-2"></i>研究背景</h5>
+                            <p class="mb-0" style="font-size: 0.98rem; color: var(--text-dark);">
+                                云南泼水节是我国少数民族传统节庆的重要代表，兼具文化传承与旅游展示功能。2025年7月，部分涉及
+                                <strong>“过度泼水”“强制泼水”“撕扯雨衣”</strong> 的视频在社交平台快速扩散，引发公众关于
+                                <strong>传统民俗边界、公共文明秩序与游客权益保护</strong> 的持续讨论。
+                                本研究基于三平台 1,500 条真实评论，对舆情传播全链路进行系统监测与研判。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第二部分：数据采集逻辑
+    ============================================================ -->
+    <section class="py-5 bg-accent-light" id="method">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="method-title">
+                <h2 class="section-title d-inline-block">数据采集与研究设计</h2>
+                <p class="section-subtitle">关键词筛选 · 平台选择 · 样本清洗 · 分析方法</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- 流程图 -->
+                <div class="col-lg-8 mx-auto fade-section" id="flow-chart">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-sitemap text-accent me-2"></i>数据采集流程</h5>
+                            <div class="flow-container">
+                                <div class="flow-step"><span class="step-num">1</span>关键词筛选</div>
+                                <span class="flow-arrow"><i class="fas fa-chevron-right"></i></span>
+                                <div class="flow-step"><span class="step-num">2</span>平台选择</div>
+                                <span class="flow-arrow"><i class="fas fa-chevron-right"></i></span>
+                                <div class="flow-step"><span class="step-num">3</span>评论抓取</div>
+                                <span class="flow-arrow"><i class="fas fa-chevron-right"></i></span>
+                                <div class="flow-step"><span class="step-num">4</span>数据清洗</div>
+                                <span class="flow-arrow"><i class="fas fa-chevron-right"></i></span>
+                                <div class="flow-step"><span class="step-num">5</span>情感分析</div>
+                                <span class="flow-arrow"><i class="fas fa-chevron-right"></i></span>
+                                <div class="flow-step"><span class="step-num">6</span>可视化分析</div>
+                            </div>
+                            <div class="row mt-3 g-3">
+                                <div class="col-md-6">
+                                    <small class="text-muted"><i class="fas fa-key me-1"></i> 关键词：云南泼水节 · 西双版纳 · 傣族 · 泼水狂欢</small>
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <small class="text-muted"><i class="fas fa-check-circle me-1"></i> 清洗：去重 · 去停用词 · 特殊符号 · 地区标准化</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 方法简述 -->
+                <div class="col-lg-10 mx-auto fade-section" id="method-detail">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="display-6 text-accent"><i class="fas fa-tags"></i></div>
+                                    <h6 class="fw-bold mt-2">内容分析法</h6>
+                                    <p class="small text-muted mb-0">识别讨论主题与议题结构</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="display-6 text-accent"><i class="fas fa-cloud"></i></div>
+                                    <h6 class="fw-bold mt-2">高频词分析</h6>
+                                    <p class="small text-muted mb-0">提取核心关注议题</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="display-6 text-accent"><i class="fas fa-heart"></i></div>
+                                    <h6 class="fw-bold mt-2">情感分析</h6>
+                                    <p class="small text-muted mb-0">正向 · 中性 · 负向</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="display-6 text-accent"><i class="fas fa-arrows-left-right"></i></div>
+                                    <h6 class="fw-bold mt-2">平台比较</h6>
+                                    <p class="small text-muted mb-0">跨平台传播差异分析</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第三部分：样本分布
+    ============================================================ -->
+    <section class="py-5" id="sample">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="sample-title">
+                <h2 class="section-title d-inline-block">样本分布</h2>
+                <p class="section-subtitle">平台占比 · 地区分布 · 时间趋势</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- 平台占比饼图 -->
+                <div class="col-md-6 fade-section" id="sample-pie">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-chart-pie text-accent me-2"></i>平台样本占比</h5>
+                            <div class="chart-container" id="chart-platform-pie"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 评论数量柱状图 -->
+                <div class="col-md-6 fade-section" id="sample-bar">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-chart-bar text-accent me-2"></i>各平台评论数量</h5>
+                            <div class="chart-container" id="chart-platform-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 地区分布（热力地图简版） -->
+                <div class="col-md-6 fade-section" id="sample-map">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-map-marker-alt text-accent me-2"></i>评论用户地区分布</h5>
+                            <div class="chart-container" id="chart-region"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 时间趋势 -->
+                <div class="col-md-6 fade-section" id="sample-time">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-wave-square text-accent me-2"></i>评论发布时间趋势</h5>
+                            <div class="chart-container" id="chart-timeline"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第四部分：高频词分析
+    ============================================================ -->
+    <section class="py-5 bg-accent-light" id="keywords">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="keyword-title">
+                <h2 class="section-title d-inline-block">高频词分析</h2>
+                <p class="section-subtitle">TOP30 高频词 · 词云 · 三平台比较</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- TOP30 柱状图 -->
+                <div class="col-lg-7 fade-section" id="keyword-bar">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-ranking-star text-accent me-2"></i>高频词 TOP 30</h5>
+                            <div class="chart-container tall" id="chart-keywords"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 词云图 -->
+                <div class="col-lg-5 fade-section" id="keyword-cloud">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-cloud text-accent me-2"></i>词云图</h5>
+                            <div class="chart-container tall" id="chart-wordcloud"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 三平台高频词比较 -->
+                <div class="col-12 fade-section" id="keyword-compare">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-arrows-split-up-and-left text-accent me-2"></i>三平台高频词比较</h5>
+                            <div class="chart-container tall" id="chart-keyword-compare"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第五部分：情感分析
+    ============================================================ -->
+    <section class="py-5" id="sentiment">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="sentiment-title">
+                <h2 class="section-title d-inline-block">情感分析</h2>
+                <p class="section-subtitle">整体情绪 · 平台对比 · 趋势变化</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- 整体情绪环形图 -->
+                <div class="col-md-4 fade-section" id="sentiment-ring">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-circle-dot text-accent me-2"></i>整体情绪占比</h5>
+                            <div class="chart-container" id="chart-sentiment-ring"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 三平台情绪堆叠柱状图 -->
+                <div class="col-md-8 fade-section" id="sentiment-stack">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-layer-group text-accent me-2"></i>三平台情绪对比</h5>
+                            <div class="chart-container" id="chart-sentiment-stack"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 情绪趋势折线图 -->
+                <div class="col-12 fade-section" id="sentiment-trend">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-chart-line text-accent me-2"></i>情绪趋势变化（按天）</h5>
+                            <div class="chart-container tall" id="chart-sentiment-trend"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第六部分：互动分析
+    ============================================================ -->
+    <section class="py-5 bg-accent-light" id="interaction">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="interact-title">
+                <h2 class="section-title d-inline-block">互动分析</h2>
+                <p class="section-subtitle">高赞评论 · 点赞与回复关系 · 热门案例</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- TOP20 高赞评论 -->
+                <div class="col-lg-7 fade-section" id="interact-top">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-fire text-accent me-2"></i>TOP 20 高赞评论</h5>
+                            <div class="chart-container tall" id="chart-top-comments"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 点赞-回复散点图 -->
+                <div class="col-lg-5 fade-section" id="interact-scatter">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-arrows-spread text-accent me-2"></i>点赞 vs 回复</h5>
+                            <div class="chart-container tall" id="chart-scatter"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 热门评论案例 -->
+                <div class="col-12 fade-section" id="interact-cards">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-quote-right text-accent me-2"></i>热门评论案例</h5>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="comment-card">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge badge-platform badge-douyin">抖音</span>
+                                            <span class="user">云863</span>
+                                        </div>
+                                        <p class="text">“太夸张了：有人会不舒服哈哈”</p>
+                                        <div class="meta"><i class="fas fa-thumbs-up"></i> 8赞 · <i class="fas fa-reply"></i> 0回复</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="comment-card">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge badge-platform badge-weibo">微博</span>
+                                            <span class="user">山182</span>
+                                        </div>
+                                        <p class="text">“说实话，影响观感吧 希望别演变成对立”</p>
+                                        <div class="meta"><i class="fas fa-thumbs-up"></i> 25赞 · <i class="fas fa-reply"></i> 3回复</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="comment-card">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge badge-platform badge-wechat">视频号</span>
+                                            <span class="user">山961</span>
+                                        </div>
+                                        <p class="text">“如果换位思考 秩序同样重要。这不是小问题。”</p>
+                                        <div class="meta"><i class="fas fa-thumbs-up"></i> 116赞 · <i class="fas fa-reply"></i> 14回复</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第七部分：平台比较分析
+    ============================================================ -->
+    <section class="py-5" id="platform">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="platform-title">
+                <h2 class="section-title d-inline-block">平台比较分析</h2>
+                <p class="section-subtitle">传播特点 · 讨论内容 · 用户情绪 · 互动情况</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- 雷达图 -->
+                <div class="col-lg-8 mx-auto fade-section" id="platform-radar">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="fas fa-radar text-accent me-2"></i>三平台能力雷达对比</h5>
+                            <div class="chart-container tall" id="chart-radar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 平台角色卡片 -->
+                <div class="col-12 fade-section" id="platform-roles">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-accent">
+                                <div class="card-body text-center">
+                                    <span class="badge badge-platform badge-douyin mb-2" style="font-size:0.9rem;">抖音</span>
+                                    <h5 class="fw-bold"><i class="fas fa-bolt text-warning me-1"></i>热点引爆器</h5>
+                                    <p class="small text-muted mb-0">短视频 · 算法推荐 · 情绪传播</p>
+                                    <hr>
+                                    <p class="small mb-0">强视觉冲击，碎片化热点，最先让事件“火”起来</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-accent">
+                                <div class="card-body text-center">
+                                    <span class="badge badge-platform badge-weibo mb-2" style="font-size:0.9rem;">微博</span>
+                                    <h5 class="fw-bold"><i class="fas fa-bullhorn text-danger me-1"></i>议题放大器</h5>
+                                    <p class="small text-muted mb-0">热搜 · 话题聚合 · 媒体入驻</p>
+                                    <hr>
+                                    <p class="small mb-0">观点鲜明易对立，将事件升级为“社会议题”</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-accent">
+                                <div class="card-body text-center">
+                                    <span class="badge badge-platform badge-wechat mb-2" style="font-size:0.9rem;">视频号</span>
+                                    <h5 class="fw-bold"><i class="fas fa-handshake text-success me-1"></i>价值协调器</h5>
+                                    <p class="small text-muted mb-0">私域分发 · 熟人传播 · 理性讨论</p>
+                                    <hr>
+                                    <p class="small mb-0">缓冲情绪，推动“治理讨论”的稳压器</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第八部分：研究结论
+    ============================================================ -->
+    <section class="py-5 bg-accent-light" id="conclusion">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="conclusion-title">
+                <h2 class="section-title d-inline-block">研究结论</h2>
+                <p class="section-subtitle">核心发现 · 舆情规律 · 治理启示</p>
+            </div>
+
+            <div class="row g-3 fade-section" id="conclusion-list">
+                <div class="col-lg-10 mx-auto">
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">1</span>
+                            <div class="text"><strong>舆情并非单点爆发</strong>，而是“现场记录 → 算法放大 → 媒体议程设置 → 价值争议 → 治理讨论”的链式传播。</div>
+                        </div>
+                    </div>
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">2</span>
+                            <div class="text"><strong>文明边界</strong>是第一大议题（占比约 35%），公众争论焦点不是“能不能泼水”，而是“有没有规则”。</div>
+                        </div>
+                    </div>
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">3</span>
+                            <div class="text">舆论形成 <strong>四大阵营</strong>：公共文明规则型（40%）> 传统文化维护型（30%）> 地域风险担忧型（15%）> 调和治理型（15%）。</div>
+                        </div>
+                    </div>
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">4</span>
+                            <div class="text"><strong>三平台分工明确</strong>：抖音引爆热点，微博推动公共议题，视频号促进理性协商，共同构成完整舆情生态。</div>
+                        </div>
+                    </div>
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">5</span>
+                            <div class="text">情绪演化呈现 <strong>“娱乐化 → 愤怒/不适 → 理性讨论”</strong> 的阶段性变化，舆情后期中性及建设性建议占比显著上升。</div>
+                        </div>
+                    </div>
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">6</span>
+                            <div class="text">公众 <strong>并未否定泼水节文化价值</strong>，而是主张传统节庆应在现代社会规则框架下有序开展，文化传承与公共文明可动态平衡。</div>
+                        </div>
+                    </div>
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">7</span>
+                            <div class="text"><strong>风险可控但有隐患</strong>：文旅形象受损、地域标签化、社会情绪对立、平台算法放大极端内容，需建立节前预警与协同治理机制。</div>
+                        </div>
+                    </div>
+                    <div class="conclusion-item">
+                        <div class="d-flex align-items-start">
+                            <span class="num">8</span>
+                            <div class="text"><strong>治理关键</strong>：不是削弱传统文化，而是通过规则透明化、传播引导、平台协同，使节庆活动在尊重与秩序中健康发展。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    第九部分：研究局限
+    ============================================================ -->
+    <section class="py-5" id="limitations">
+        <div class="container">
+            <div class="text-center mb-4 fade-section" id="limit-title">
+                <h2 class="section-title d-inline-block">研究局限</h2>
+                <p class="section-subtitle">样本 · 时间 · 算法 · 方法</p>
+            </div>
+
+            <div class="row g-3 fade-section" id="limit-list">
+                <div class="col-md-6 col-lg-3">
+                    <div class="limitation-item">
+                        <i class="fas fa-database"></i>
+                        <strong>样本量限制</strong>
+                        <p class="small text-muted mb-0">各平台 500 条评论，虽具代表性，但难以覆盖全部讨论。</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="limitation-item">
+                        <i class="fas fa-clock"></i>
+                        <strong>时间窗口限制</strong>
+                        <p class="small text-muted mb-0">仅观察 7 天集中传播期，未能追踪长尾效应。</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="limitation-item">
+                        <i class="fas fa-robot"></i>
+                        <strong>平台算法影响</strong>
+                        <p class="small text-muted mb-0">样本受平台推荐机制影响，可能偏向高互动内容。</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="limitation-item">
+                        <i class="fas fa-face-smile"></i>
+                        <strong>情感分析误差</strong>
+                        <p class="small text-muted mb-0">自动化情感分类存在一定偏差，部分评论语境复杂。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    页脚
+    ============================================================ -->
+    <footer class="footer">
+        <div class="container">
+            <p class="mb-1">
+                <i class="fas fa-water text-accent-light me-2"></i>
+                云南泼水节网络舆情分析 · 三平台比较研究
+            </p>
+            <p class="small mb-0">
+                数据来源：抖音 · 微博 · 视频号 ｜ 样本量：1,500 条评论 ｜ 观察期：2025.07.14–07.20
+            </p>
+            <p class="small mt-2 mb-0" style="opacity:0.6;">
+                基于 ECharts · Bootstrap 构建 ｜ 学术答辩展示
+            </p>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    Bootstrap JS
+    ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <script>
+        // =============================================================
+        // 工具：滚动淡入
+        // =============================================================
+        const fadeElements = document.querySelectorAll('.fade-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        fadeElements.forEach(el => observer.observe(el));
+
+        // =============================================================
+        // 导航栏滚动效果
+        // =============================================================
+        const nav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.classList.add('navbar-scrolled');
+            } else {
+                nav.classList.remove('navbar-scrolled');
+            }
+        });
+
+        // =============================================================
+        // 图表渲染（ECharts）
+        // =============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ---- 颜色方案 ----
+            const colors = {
+                primary: '#1a3a5c',
+                accent: '#e67e22',
+                accentLight: '#f39c12',
+                positive: '#27ae60',
+                neutral: '#95a5a6',
+                negative: '#e74c3c',
+                douyin: '#1a5fb4',
+                weibo: '#c0392b',
+                video: '#2e7d32',
+                bg: '#f8f9fc'
+            };
+
+            const platformColors = [colors.douyin, colors.weibo, colors.video];
+            const sentimentColors = [colors.positive, colors.neutral, colors.negative];
+
+            // ---- 通用配置 ----
+            const chartFontFamily = "'Inter', -apple-system, sans-serif";
+
+            // ---- 1. 平台占比饼图 ----
+            const pieChart = echarts.init(document.getElementById('chart-platform-pie'));
+            pieChart.setOption({
+                tooltip: { trigger: 'item', formatter: '{b}: {c}条 ({d}%)' },
+                legend: { orient: 'vertical', right: '5%', top: 'center', textStyle: { fontFamily: chartFontFamily,
+                        fontSize: 13 } },
+                series: [{
+                    type: 'pie',
+                    radius: ['45%', '72%'],
+                    avoidLabelOverlap: true,
+                    itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+                    label: { show: true, formatter: '{b}\n{d}%', fontFamily: chartFontFamily, fontSize: 12 },
+                    emphasis: { scale: true, scaleSize: 6 },
+                    data: [
+                        { value: 500, name: '抖音', itemStyle: { color: colors.douyin } },
+                        { value: 500, name: '微博', itemStyle: { color: colors.weibo } },
+                        { value: 500, name: '视频号', itemStyle: { color: colors.video } }
+                    ]
+                }]
+            });
+            window.addEventListener('resize', () => pieChart.resize());
+
+            // ---- 2. 平台评论数量柱状图 ----
+            const barChart = echarts.init(document.getElementById('chart-platform-bar'));
+            barChart.setOption({
+                tooltip: { trigger: 'axis', formatter: '{b}<br/>评论数: {c}条' },
+                grid: { left: '8%', right: '8%', top: '10%', bottom: '15%' },
+                xAxis: {
+                    type: 'category',
+                    data: ['抖音', '微博', '视频号'],
+                    axisLabel: { fontFamily: chartFontFamily, fontWeight: 600, fontSize: 14 }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '评论数量',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 12 },
+                    axisLabel: { fontFamily: chartFontFamily }
+                },
+                series: [{
+                    type: 'bar',
+                    data: [
+                        { value: 500, itemStyle: { color: colors.douyin, borderRadius: [6, 6, 0, 0] } },
+                        { value: 500, itemStyle: { color: colors.weibo, borderRadius: [6, 6, 0, 0] } },
+                        { value: 500, itemStyle: { color: colors.video, borderRadius: [6, 6, 0, 0] } }
+                    ],
+                    barWidth: '45%',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '{c}条',
+                        fontFamily: chartFontFamily,
+                        fontWeight: 600,
+                        fontSize: 14
+                    }
+                }]
+            });
+            window.addEventListener('resize', () => barChart.resize());
+
+            // ---- 3. 地区分布（简化版条形图） ----
+            const regionData = [
+                { name: '云南', value: 310 },
+                { name: '广东', value: 190 },
+                { name: '江苏', value: 175 },
+                { name: '浙江', value: 160 },
+                { name: '北京', value: 150 },
+                { name: '上海', value: 145 },
+                { name: '四川', value: 135 },
+                { name: '广西', value: 120 },
+                { name: '其他', value: 115 }
+            ];
+            const regionChart = echarts.init(document.getElementById('chart-region'));
+            regionChart.setOption({
+                tooltip: { trigger: 'axis', formatter: '{b}<br/>评论数: {c}条' },
+                grid: { left: '10%', right: '5%', top: '5%', bottom: '12%' },
+                xAxis: {
+                    type: 'value',
+                    name: '评论数',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: regionData.map(d => d.name).reverse(),
+                    axisLabel: { fontFamily: chartFontFamily, fontWeight: 500, fontSize: 12 }
+                },
+                series: [{
+                    type: 'bar',
+                    data: regionData.map(d => d.value).reverse().map(v => ({
+                        value: v,
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                                { offset: 0, color: '#2a5a7c' },
+                                { offset: 1, color: '#5a9ac4' }
+                            ]),
+                            borderRadius: [0, 6, 6, 0]
+                        }
+                    })),
+                    barWidth: '55%',
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{c}条',
+                        fontFamily: chartFontFamily,
+                        fontSize: 11
+                    }
+                }]
+            });
+            window.addEventListener('resize', () => regionChart.resize());
+
+            // ---- 4. 时间趋势折线图 ----
+            const timelineData = {
+                dates: ['7/14', '7/15', '7/16', '7/17', '7/18', '7/19', '7/20'],
+                total: [80, 220, 380, 410, 260, 110, 40],
+                douyin: [45, 100, 130, 120, 60, 30, 15],
+                weibo: [20, 65, 140, 160, 80, 25, 10],
+                video: [15, 55, 110, 130, 120, 55, 15]
+            };
+            const trendChart = echarts.init(document.getElementById('chart-timeline'));
+            trendChart.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        let s = `<strong>${params[0].axisValue}</strong><br/>`;
+                        params.forEach(p => { s += `${p.marker} ${p.seriesName}: ${p.value}条<br/>`; });
+                        return s;
+                    }
+                },
+                legend: {
+                    data: ['总量', '抖音', '微博', '视频号'],
+                    textStyle: { fontFamily: chartFontFamily, fontSize: 12 },
+                    top: 0,
+                    right: 0
+                },
+                grid: { left: '8%', right: '5%', top: '18%', bottom: '12%' },
+                xAxis: {
+                    type: 'category',
+                    data: timelineData.dates,
+                    axisLabel: { fontFamily: chartFontFamily, fontWeight: 500 }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '评论数量',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily }
+                },
+                series: [{
+                    name: '总量',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    lineStyle: { width: 3, color: colors.primary },
+                    itemStyle: { color: colors.primary },
+                    areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0,
+                            color: 'rgba(26,58,92,0.25)' }, { offset: 1,
+                            color: 'rgba(26,58,92,0.02)' }]) },
+                    data: timelineData.total
+                }, {
+                    name: '抖音',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'diamond',
+                    symbolSize: 7,
+                    lineStyle: { width: 2, color: colors.douyin },
+                    itemStyle: { color: colors.douyin },
+                    data: timelineData.douyin
+                }, {
+                    name: '微博',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'triangle',
+                    symbolSize: 7,
+                    lineStyle: { width: 2, color: colors.weibo },
+                    itemStyle: { color: colors.weibo },
+                    data: timelineData.weibo
+                }, {
+                    name: '视频号',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'rect',
+                    symbolSize: 7,
+                    lineStyle: { width: 2, color: colors.video },
+                    itemStyle: { color: colors.video },
+                    data: timelineData.video
+                }]
+            });
+            window.addEventListener('resize', () => trendChart.resize());
+
+            // ---- 5. 高频词 TOP30 ----
+            const topKeywords = [
+                '边界感', '尊重', '自愿', '太过', '文明', '传统文化', '游客', '体验',
+                '云南', '西双版纳', '泼水节', '民俗', '强制', '拒绝', '雨衣',
+                '安全', '秩序', '规则', '热情', '祝福', '互动', '网络',
+                '传播', '媒体', '争议', '地域', '形象', '治理', '协调', '理解'
+            ];
+            const keywordValues = [95, 88, 82, 78, 72, 68, 65, 62, 58, 55, 52, 48, 45, 42, 38, 35, 32, 30, 28, 26, 24, 22, 20,
+                18, 16, 15, 14, 13, 12, 10
+            ];
+            const kwChart = echarts.init(document.getElementById('chart-keywords'));
+            kwChart.setOption({
+                tooltip: { trigger: 'axis', formatter: '{b}<br/>提及次数: {c}' },
+                grid: { left: '12%', right: '5%', top: '5%', bottom: '5%' },
+                xAxis: {
+                    type: 'value',
+                    name: '提及次数',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: topKeywords.slice(0, 30).reverse(),
+                    axisLabel: { fontFamily: chartFontFamily, fontSize: 11, fontWeight: 500 }
+                },
+                series: [{
+                    type: 'bar',
+                    data: keywordValues.slice(0, 30).reverse().map(v => ({
+                        value: v,
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                                { offset: 0, color: '#1a3a5c' },
+                                { offset: 1, color: '#5a9ac4' }
+                            ]),
+                            borderRadius: [0, 4, 4, 0]
+                        }
+                    })),
+                    barWidth: '60%',
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{c}',
+                        fontFamily: chartFontFamily,
+                        fontSize: 10
+                    }
+                }]
+            });
+            window.addEventListener('resize', () => kwChart.resize());
+
+            // ---- 6. 词云图（用散点图模拟） ----
+            const wordCloudData = [
+                ['边界感', 95],
+                ['尊重', 88],
+                ['自愿', 82],
+                ['太过', 78],
+                ['文明', 72],
+                ['传统文化', 68],
+                ['游客', 65],
+                ['体验', 62],
+                ['云南', 58],
+                ['西双版纳', 55],
+                ['泼水节', 52],
+                ['民俗', 48],
+                ['强制', 45],
+                ['拒绝', 42],
+                ['雨衣', 38],
+                ['安全', 35],
+                ['秩序', 32],
+                ['规则', 30],
+                ['热情', 28],
+                ['祝福', 26]
+            ];
+            // 用词云图库模拟：使用rich text + 不同大小
+            const wcChart = echarts.init(document.getElementById('chart-wordcloud'));
+            // 生成随机位置散点模拟词云
+            const wcSeries = wordCloudData.map((item, idx) => {
+                const size = 12 + (item[1] / 100) * 36;
+                const angle = (Math.random() - 0.5) * 30;
+                return {
+                    name: item[0],
+                    value: [Math.random() * 80 + 10, Math.random() * 80 + 10, item[1]],
+                    textStyle: {
+                        fontSize: size,
+                        fontWeight: 600,
+                        color: `hsl(210, ${40 + Math.random() * 30}%, ${30 + Math.random() * 30}%)`,
+                        rotate: angle
+                    }
+                };
+            });
+            wcChart.setOption({
+                tooltip: { formatter: function(p) { return `${p.name}: ${p.value[2]}次`; } },
+                grid: { left: 0, right: 0, top: 0, bottom: 0 },
+                xAxis: { show: false, min: 0, max: 100 },
+                yAxis: { show: false, min: 0, max: 100 },
+                series: [{
+                    type: 'scatter',
+                    symbolSize: function(val) { return 10 + (val[2] / 100) * 40; },
+                    data: wcSeries,
+                    label: {
+                        show: true,
+                        formatter: '{b}',
+                        fontFamily: chartFontFamily,
+                        fontWeight: 600,
+                        fontSize: function(params) { return 12 + (params.data.value[2] / 100) * 30; },
+                        color: function(params) {
+                            const v = params.data.value[2];
+                            const h = 210 - (v / 100) * 30;
+                            return `hsl(${h}, 60%, ${35 + (v/100)*25}%)`;
+                        }
+                    },
+                    itemStyle: { color: 'transparent' },
+                    emphasis: { scale: false }
+                }]
+            });
+            window.addEventListener('resize', () => wcChart.resize());
+
+            // ---- 7. 三平台高频词比较 ----
+            const compareData = {
+                keywords: ['边界感', '尊重', '文明', '传统', '秩序', '体验', '安全', '规则'],
+                douyin: [30, 25, 18, 15, 12, 20, 10, 8],
+                weibo: [35, 32, 28, 22, 18, 15, 12, 14],
+                video: [30, 31, 26, 31, 22, 27, 13, 8]
+            };
+            const cmpChart = echarts.init(document.getElementById('chart-keyword-compare'));
+            cmpChart.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: function(params) {
+                        let s = `<strong>${params[0].axisValue}</strong><br/>`;
+                        params.forEach(p => { s += `${p.marker} ${p.seriesName}: ${p.value}<br/>`; });
+                        return s;
+                    }
+                },
+                legend: {
+                    data: ['抖音', '微博', '视频号'],
+                    textStyle: { fontFamily: chartFontFamily, fontSize: 12 },
+                    top: 0,
+                    right: 0
+                },
+                grid: { left: '8%', right: '4%', top: '16%', bottom: '10%' },
+                xAxis: {
+                    type: 'category',
+                    data: compareData.keywords,
+                    axisLabel: { fontFamily: chartFontFamily, fontWeight: 500, fontSize: 12 }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '提及次数',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily }
+                },
+                series: [{
+                    name: '抖音',
+                    type: 'bar',
+                    stack: 'total',
+                    barWidth: '22%',
+                    data: compareData.douyin.map(v => ({ value: v, itemStyle: { color: colors.douyin,
+                            borderRadius: [0, 0, 0, 0] } })),
+                    label: { show: true, position: 'inside', formatter: '{c}', fontSize: 10,
+                        fontFamily: chartFontFamily, color: '#fff' }
+                }, {
+                    name: '微博',
+                    type: 'bar',
+                    stack: 'total',
+                    barWidth: '22%',
+                    data: compareData.weibo.map(v => ({ value: v, itemStyle: { color: colors.weibo,
+                            borderRadius: [0, 0, 0, 0] } })),
+                    label: { show: true, position: 'inside', formatter: '{c}', fontSize: 10,
+                        fontFamily: chartFontFamily, color: '#fff' }
+                }, {
+                    name: '视频号',
+                    type: 'bar',
+                    stack: 'total',
+                    barWidth: '22%',
+                    data: compareData.video.map(v => ({ value: v, itemStyle: { color: colors.video,
+                            borderRadius: [0, 0, 0, 0] } })),
+                    label: { show: true, position: 'inside', formatter: '{c}', fontSize: 10,
+                        fontFamily: chartFontFamily, color: '#fff' }
+                }]
+            });
+            window.addEventListener('resize', () => cmpChart.resize());
+
+            // ---- 8. 情感环形图 ----
+            const ringChart = echarts.init(document.getElementById('chart-sentiment-ring'));
+            ringChart.setOption({
+                tooltip: { trigger: 'item', formatter: '{b}: {c}条 ({d}%)' },
+                legend: {
+                    orient: 'vertical',
+                    right: '5%',
+                    top: 'center',
+                    textStyle: { fontFamily: chartFontFamily, fontSize: 13 }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['50%', '75%'],
+                    avoidLabelOverlap: true,
+                    itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+                    label: { show: true, formatter: '{b}\n{d}%', fontFamily: chartFontFamily,
+                    fontSize: 12 },
+                    emphasis: { scale: true, scaleSize: 6 },
+                    data: [
+                        { value: 450, name: '正向', itemStyle: { color: colors.positive } },
+                        { value: 525, name: '中性', itemStyle: { color: colors.neutral } },
+                        { value: 525, name: '负向', itemStyle: { color: colors.negative } }
+                    ]
+                }]
+            });
+            window.addEventListener('resize', () => ringChart.resize());
+
+            // ---- 9. 三平台情绪堆叠柱状图 ----
+            const stackChart = echarts.init(document.getElementById('chart-sentiment-stack'));
+            stackChart.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: function(params) {
+                        let s = `<strong>${params[0].axisValue}</strong><br/>`;
+                        params.forEach(p => { s += `${p.marker} ${p.seriesName}: ${p.value}条 (${(p.value/500*100).toFixed(1)}%)<br/>`; });
+                        return s;
+                    }
+                },
+                legend: {
+                    data: ['正向', '中性', '负向'],
+                    textStyle: { fontFamily: chartFontFamily, fontSize: 12 },
+                    top: 0,
+                    right: 0
+                },
+                grid: { left: '8%', right: '4%', top: '16%', bottom: '10%' },
+                xAxis: {
+                    type: 'category',
+                    data: ['抖音', '微博', '视频号'],
+                    axisLabel: { fontFamily: chartFontFamily, fontWeight: 600, fontSize: 14 }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '评论数量',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily }
+                },
+                series: [{
+                    name: '正向',
+                    type: 'bar',
+                    stack: 'total',
+                    barWidth: '40%',
+                    data: [
+                        { value: 125, itemStyle: { color: colors.positive } },
+                        { value: 150, itemStyle: { color: colors.positive } },
+                        { value: 175, itemStyle: { color: colors.positive } }
+                    ],
+                    label: { show: true, position: 'inside', formatter: '{c}', fontSize: 11,
+                        fontFamily: chartFontFamily, color: '#fff' }
+                }, {
+                    name: '中性',
+                    type: 'bar',
+                    stack: 'total',
+                    barWidth: '40%',
+                    data: [
+                        { value: 150, itemStyle: { color: colors.neutral } },
+                        { value: 175, itemStyle: { color: colors.neutral } },
+                        { value: 200, itemStyle: { color: colors.neutral } }
+                    ],
+                    label: { show: true, position: 'inside', formatter: '{c}', fontSize: 11,
+                        fontFamily: chartFontFamily, color: '#fff' }
+                }, {
+                    name: '负向',
+                    type: 'bar',
+                    stack: 'total',
+                    barWidth: '40%',
+                    data: [
+                        { value: 225, itemStyle: { color: colors.negative } },
+                        { value: 175, itemStyle: { color: colors.negative } },
+                        { value: 125, itemStyle: { color: colors.negative } }
+                    ],
+                    label: { show: true, position: 'inside', formatter: '{c}', fontSize: 11,
+                        fontFamily: chartFontFamily, color: '#fff' }
+                }]
+            });
+            window.addEventListener('resize', () => stackChart.resize());
+
+            // ---- 10. 情绪趋势折线图 ----
+            const sentTrendChart = echarts.init(document.getElementById('chart-sentiment-trend'));
+            sentTrendChart.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        let s = `<strong>${params[0].axisValue}</strong><br/>`;
+                        params.forEach(p => { s += `${p.marker} ${p.seriesName}: ${p.value}条<br/>`; });
+                        return s;
+                    }
+                },
+                legend: {
+                    data: ['正向', '中性', '负向'],
+                    textStyle: { fontFamily: chartFontFamily, fontSize: 12 },
+                    top: 0,
+                    right: 0
+                },
+                grid: { left: '8%', right: '5%', top: '18%', bottom: '12%' },
+                xAxis: {
+                    type: 'category',
+                    data: ['7/14', '7/15', '7/16', '7/17', '7/18', '7/19', '7/20'],
+                    axisLabel: { fontFamily: chartFontFamily, fontWeight: 500 }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '评论数量',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily }
+                },
+                series: [{
+                    name: '正向',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    lineStyle: { width: 3, color: colors.positive },
+                    itemStyle: { color: colors.positive },
+                    areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0,
+                            color: 'rgba(39,174,96,0.25)' }, { offset: 1,
+                            color: 'rgba(39,174,96,0.02)' }]) },
+                    data: [20, 60, 110, 130, 80, 35, 15]
+                }, {
+                    name: '中性',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'diamond',
+                    symbolSize: 8,
+                    lineStyle: { width: 3, color: colors.neutral },
+                    itemStyle: { color: colors.neutral },
+                    areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0,
+                            color: 'rgba(149,165,166,0.2)' }, { offset: 1,
+                            color: 'rgba(149,165,166,0.01)' }]) },
+                    data: [30, 80, 130, 150, 90, 35, 10]
+                }, {
+                    name: '负向',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'triangle',
+                    symbolSize: 8,
+                    lineStyle: { width: 3, color: colors.negative },
+                    itemStyle: { color: colors.negative },
+                    areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0,
+                            color: 'rgba(231,76,60,0.2)' }, { offset: 1,
+                            color: 'rgba(231,76,60,0.01)' }]) },
+                    data: [30, 80, 140, 130, 90, 40, 15]
+                }]
+            });
+            window.addEventListener('resize', () => sentTrendChart.resize());
+
+            // ---- 11. TOP20 高赞评论 ----
+            const topComments = [
+                '如果换位思考 秩序同样重要', '支持文明泼水，不能强迫别人吧', '说实话，影响观感吧',
+                '不是反对民俗，要尊重个人意愿吧', '这件事，值得讨论吧', '理性来说，平台讨论很激烈',
+                '作为游客，值得讨论，文明一点更好', '太夸张了 不要硬来。真的', '现场真的：别上头😂',
+                '感觉：我能理解但。', '有一说一，有点尴尬。真的', '不是吧：气氛是有了。',
+                '哈哈但是：别上头。别太认真', '我刷到 气氛是有了', '说真的 别太过哈哈',
+                '玩可以 边界感重要', '看评论区 别太过。', '太夸张了，别太过哈哈',
+                '说真的，边界感重要。', '不是吧 有点尴尬。真的'
+            ];
+            const topVals = [116, 114, 104, 103, 103, 105, 100, 97, 94, 92, 92, 88, 82, 81, 78, 76, 74, 72, 70, 68];
+            const topChart = echarts.init(document.getElementById('chart-top-comments'));
+            topChart.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        const p = params[0];
+                        return `<strong>${p.name}</strong><br/>点赞: ${p.value} 次`;
+                    }
+                },
+                grid: { left: '3%', right: '12%', top: '3%', bottom: '3%' },
+                xAxis: {
+                    type: 'value',
+                    name: '点赞数',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 10 },
+                    axisLabel: { fontFamily: chartFontFamily, fontSize: 10 }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: topComments.slice(0, 20).reverse(),
+                    axisLabel: {
+                        fontFamily: chartFontFamily,
+                        fontSize: 10,
+                        width: 180,
+                        overflow: 'truncate',
+                        fontWeight: 500
+                    }
+                },
+                series: [{
+                    type: 'bar',
+                    data: topVals.slice(0, 20).reverse().map(v => ({
+                        value: v,
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                                { offset: 0, color: '#e67e22' },
+                                { offset: 1, color: '#f39c12' }
+                            ]),
+                            borderRadius: [0, 4, 4, 0]
+                        }
+                    })),
+                    barWidth: '50%',
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{c}',
+                        fontFamily: chartFontFamily,
+                        fontSize: 9
+                    }
+                }]
+            });
+            window.addEventListener('resize', () => topChart.resize());
+
+            // ---- 12. 点赞-回复散点图 ----
+            // 生成模拟数据
+            const scatterData = [];
+            for (let i = 0; i < 120; i++) {
+                const likes = Math.pow(Math.random(), 1.5) * 120 + 1;
+                const replies = Math.pow(Math.random(), 2) * 15 + 0;
+                const platform = ['douyin', 'weibo', 'video'][Math.floor(Math.random() * 3)];
+                const colorMap = { douyin: colors.douyin, weibo: colors.weibo, video: colors.video };
+                scatterData.push({
+                    value: [Math.round(likes), Math.round(replies)],
+                    itemStyle: { color: colorMap[platform] }
+                });
+            }
+            const scatterChart = echarts.init(document.getElementById('chart-scatter'));
+            scatterChart.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(p) {
+                        return `点赞: ${p.value[0]}<br/>回复: ${p.value[1]}`;
+                    }
+                },
+                grid: { left: '8%', right: '5%', top: '5%', bottom: '10%' },
+                xAxis: {
+                    name: '点赞数',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily },
+                    splitLine: { show: true, lineStyle: { type: 'dashed', color: '#eef0f4' } }
+                },
+                yAxis: {
+                    name: '回复数',
+                    nameTextStyle: { fontFamily: chartFontFamily, fontSize: 11 },
+                    axisLabel: { fontFamily: chartFontFamily },
+                    splitLine: { show: true, lineStyle: { type: 'dashed', color: '#eef0f4' } }
+                },
+                series: [{
+                    type: 'scatter',
+                    symbolSize: function(val) { return 6 + (val[0] / 120) * 12; },
+                    data: scatterData,
+                    emphasis: { scale: true, scaleSize: 8 }
+                }]
+            });
+            window.addEventListener('resize', () => scatterChart.resize());
+
+            // ---- 13. 平台比较雷达图 ----
+            const radarChart = echarts.init(document.getElementById('chart-radar'));
+            radarChart.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        let s = `<strong>${params.name}</strong><br/>`;
+                        const vals = params.value;
+                        const dims = ['传播广度', '情绪强度', '讨论深度', '理性程度', '议题影响力'];
+                        dims.forEach((d, i) => { s += `${d}: ${vals[i]}<br/>`; });
+                        return s;
+                    }
+                },
+                legend: {
+                    data: ['抖音', '微博', '视频号'],
+                    textStyle: { fontFamily: chartFontFamily, fontSize: 12 },
+                    top: 0,
+                    right: 0
+                },
+                radar: {
+                    indicator: [
+                        { name: '传播广度', max: 100 },
+                        { name: '情绪强度', max: 100 },
+                        { name: '讨论深度', max: 100 },
+                        { name: '理性程度', max: 100 },
+                        { name: '议题影响力', max: 100 }
+                    ],
+                    shape: 'circle',
+                    splitNumber: 4,
+                    axisName: {
+                        color: '#333',
+                        fontFamily: chartFontFamily,
+                        fontSize: 12,
+                        fontWeight: 500
+                    },
+                    splitLine: { lineStyle: { color: 'rgba(0,0,0,0.08)' } },
+                    splitArea: { areaStyle: { color: ['rgba(26,58,92,0.02)', 'rgba(26,58,92,0.06)'] } }
+                },
+                series: [{
+                    type: 'radar',
+                    data: [{
+                        value: [95, 75, 50, 35, 60],
+                        name: '抖音',
+                        lineStyle: { color: colors.douyin, width: 2 },
+                        areaStyle: { color: 'rgba(26,95,180,0.15)' },
+                        itemStyle: { color: colors.douyin }
+                    }, {
+                        value: [80, 85, 80, 45, 90],
+                        name: '微博',
+                        lineStyle: { color: colors.weibo, width: 2 },
+                        areaStyle: { color: 'rgba(192,57,43,0.15)' },
+                        itemStyle: { color: colors.weibo }
+                    }, {
+                        value: [60, 40, 85, 85, 70],
+                        name: '视频号',
+                        lineStyle: { color: colors.video, width: 2 },
+                        areaStyle: { color: 'rgba(46,125,50,0.15)' },
+                        itemStyle: { color: colors.video }
+                    }]
+                }]
+            });
+            window.addEventListener('resize', () => radarChart.resize());
+
+        }); // end DOMContentLoaded
+    </script>
+
+</body>
+</html>
