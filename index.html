@@ -811,32 +811,22 @@
     </section>
 
     <!-- ============================================================
-    第四部分：高频词分析
+    第四部分：高频词分析（删除了词云图，只保留TOP30柱状图和三平台比较）
     ============================================================ -->
     <section class="py-5 bg-accent-light" id="keywords">
         <div class="container">
             <div class="text-center mb-4 fade-section" id="keyword-title">
                 <h2 class="section-title d-inline-block">高频词分析</h2>
-                <p class="section-subtitle">TOP30 高频词 · 词云 · 三平台比较</p>
+                <p class="section-subtitle">TOP30 高频词 · 三平台比较</p>
             </div>
 
             <div class="row g-4">
-                <!-- TOP30 柱状图 -->
-                <div class="col-lg-7 fade-section" id="keyword-bar">
-                    <div class="card h-100">
+                <!-- TOP30 柱状图 占满整行 -->
+                <div class="col-12 fade-section" id="keyword-bar">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="fw-bold"><i class="fas fa-ranking-star text-accent me-2"></i>高频词 TOP 30</h5>
                             <div class="chart-container tall" id="chart-keywords"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 词云图 -->
-                <div class="col-lg-5 fade-section" id="keyword-cloud">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="fw-bold"><i class="fas fa-cloud text-accent me-2"></i>词云图</h5>
-                            <div class="chart-container tall" id="chart-wordcloud"></div>
                         </div>
                     </div>
                 </div>
@@ -961,7 +951,7 @@
                                             <span class="badge badge-platform badge-wechat">视频号</span>
                                             <span class="user">山961</span>
                                         </div>
-                                        <p class="text">“如果换位思考 秩序同样重要。这不是小问题。”</p>
+                                        <p class="text">“如果换位思考 秩序同样重要。这不是小问题。” </p>
                                         <div class="meta"><i class="fas fa-thumbs-up"></i> 116赞 · <i class="fas fa-reply"></i> 14回复</div>
                                     </div>
                                 </div>
@@ -1456,74 +1446,7 @@
             });
             window.addEventListener('resize', () => kwChart.resize());
 
-            // ---- 6. 词云图（用散点图模拟） ----
-            const wordCloudData = [
-                ['边界感', 95],
-                ['尊重', 88],
-                ['自愿', 82],
-                ['太过', 78],
-                ['文明', 72],
-                ['传统文化', 68],
-                ['游客', 65],
-                ['体验', 62],
-                ['云南', 58],
-                ['西双版纳', 55],
-                ['泼水节', 52],
-                ['民俗', 48],
-                ['强制', 45],
-                ['拒绝', 42],
-                ['雨衣', 38],
-                ['安全', 35],
-                ['秩序', 32],
-                ['规则', 30],
-                ['热情', 28],
-                ['祝福', 26]
-            ];
-            // 用词云图库模拟：使用rich text + 不同大小
-            const wcChart = echarts.init(document.getElementById('chart-wordcloud'));
-            // 生成随机位置散点模拟词云
-            const wcSeries = wordCloudData.map((item, idx) => {
-                const size = 12 + (item[1] / 100) * 36;
-                const angle = (Math.random() - 0.5) * 30;
-                return {
-                    name: item[0],
-                    value: [Math.random() * 80 + 10, Math.random() * 80 + 10, item[1]],
-                    textStyle: {
-                        fontSize: size,
-                        fontWeight: 600,
-                        color: `hsl(210, ${40 + Math.random() * 30}%, ${30 + Math.random() * 30}%)`,
-                        rotate: angle
-                    }
-                };
-            });
-            wcChart.setOption({
-                tooltip: { formatter: function(p) { return `${p.name}: ${p.value[2]}次`; } },
-                grid: { left: 0, right: 0, top: 0, bottom: 0 },
-                xAxis: { show: false, min: 0, max: 100 },
-                yAxis: { show: false, min: 0, max: 100 },
-                series: [{
-                    type: 'scatter',
-                    symbolSize: function(val) { return 10 + (val[2] / 100) * 40; },
-                    data: wcSeries,
-                    label: {
-                        show: true,
-                        formatter: '{b}',
-                        fontFamily: chartFontFamily,
-                        fontWeight: 600,
-                        fontSize: function(params) { return 12 + (params.data.value[2] / 100) * 30; },
-                        color: function(params) {
-                            const v = params.data.value[2];
-                            const h = 210 - (v / 100) * 30;
-                            return `hsl(${h}, 60%, ${35 + (v/100)*25}%)`;
-                        }
-                    },
-                    itemStyle: { color: 'transparent' },
-                    emphasis: { scale: false }
-                }]
-            });
-            window.addEventListener('resize', () => wcChart.resize());
-
-            // ---- 7. 三平台高频词比较 ----
+            // ---- 6. 三平台高频词比较 ----
             const compareData = {
                 keywords: ['边界感', '尊重', '文明', '传统', '秩序', '体验', '安全', '规则'],
                 douyin: [30, 25, 18, 15, 12, 20, 10, 8],
@@ -1590,7 +1513,7 @@
             });
             window.addEventListener('resize', () => cmpChart.resize());
 
-            // ---- 8. 情感环形图 ----
+            // ---- 7. 情感环形图 ----
             const ringChart = echarts.init(document.getElementById('chart-sentiment-ring'));
             ringChart.setOption({
                 tooltip: { trigger: 'item', formatter: '{b}: {c}条 ({d}%)' },
@@ -1617,7 +1540,7 @@
             });
             window.addEventListener('resize', () => ringChart.resize());
 
-            // ---- 9. 三平台情绪堆叠柱状图 ----
+            // ---- 8. 三平台情绪堆叠柱状图 ----
             const stackChart = echarts.init(document.getElementById('chart-sentiment-stack'));
             stackChart.setOption({
                 tooltip: {
@@ -1687,7 +1610,7 @@
             });
             window.addEventListener('resize', () => stackChart.resize());
 
-            // ---- 10. 情绪趋势折线图 ----
+            // ---- 9. 情绪趋势折线图 ----
             const sentTrendChart = echarts.init(document.getElementById('chart-sentiment-trend'));
             sentTrendChart.setOption({
                 tooltip: {
@@ -1756,7 +1679,7 @@
             });
             window.addEventListener('resize', () => sentTrendChart.resize());
 
-            // ---- 11. TOP20 高赞评论 ----
+            // ---- 10. TOP20 高赞评论 ----
             const topComments = [
                 '如果换位思考 秩序同样重要', '支持文明泼水，不能强迫别人吧', '说实话，影响观感吧',
                 '不是反对民俗，要尊重个人意愿吧', '这件事，值得讨论吧', '理性来说，平台讨论很激烈',
@@ -1818,7 +1741,7 @@
             });
             window.addEventListener('resize', () => topChart.resize());
 
-            // ---- 12. 点赞-回复散点图 ----
+            // ---- 11. 点赞-回复散点图 ----
             // 生成模拟数据
             const scatterData = [];
             for (let i = 0; i < 120; i++) {
@@ -1861,7 +1784,7 @@
             });
             window.addEventListener('resize', () => scatterChart.resize());
 
-            // ---- 13. 平台比较雷达图 ----
+            // ---- 12. 平台比较雷达图 ----
             const radarChart = echarts.init(document.getElementById('chart-radar'));
             radarChart.setOption({
                 tooltip: {
